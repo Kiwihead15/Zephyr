@@ -15,7 +15,7 @@ config = {
     "threads": int(os.cpu_count() / 2)
 }
 
-local_llm = CTransformers(model='C:\\Users\\pbiosca\\AI\\Projects\\models\\zephyr-7b-beta.Q3_K_S.gguf', config=config)  # Path to the local Zephyr-7B model file
+local_llm = CTransformers(model='C:\\Users\\pbiosca\\AI\\Projects\\models\\zephyr-7b-beta.Q6_K.gguf', config=config)  # Path to the local Zephyr-7B model file
 #local_llm = CTransformers(model='TheBloke/zephyr-7B-beta-GGUF', model_file='zephyr-7b-beta.Q2_K.gguf', config=config)
 
 template = """Question: {question}

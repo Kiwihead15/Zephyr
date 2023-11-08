@@ -1,25 +1,9 @@
-# %% [markdown]
-# <a href="https://colab.research.google.com/github/Kiwihead15/Test-models/blob/main/question_answer_Zephyr_7B.ipynb" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/></a>
 
-# %%
-from huggingface_hub import hf_hub_download
-
-# %%
-hf_hub_download("TheBloke/zephyr-7B-beta-GGUF",filename="zephyr-7b-beta.Q3_K_S.gguf",local_dir_use_symlinks=False)
-
-# %%
-#! pip install chainlit langchain
-
-# %%
 import os
 import chainlit as cl
 from langchain.llms import CTransformers
 from langchain.prompts import PromptTemplate
 from langchain.chains import LLMChain
-
-# %%
-#local_llm = r"C:\Users\pbiosca\.cache\huggingface\hub\models--TheBloke--zephyr-7B-beta-GGUF\snapshots\e4714d14e9652aa9658fa937732cceadc63ac42e\zephyr-7b-beta.Q3_K_S.gguf"  # Path to the local Zephyr-7B model file
-local_llm = CTransformers(model='TheBloke/zephyr-7B-beta-GGUF', model_file='zephyr-7b-beta.Q2_K.gguf')
 
 config = {
     "max_new_tokens": 1024,
@@ -31,20 +15,20 @@ config = {
     "threads": int(os.cpu_count() / 2)
 }
 
-# %%
+local_llm = CTransformers(model='C:\\Users\\pbiosca\\AI\\Projects\\models\\zephyr-7b-beta.Q3_K_S.gguf', config=config)  # Path to the local Zephyr-7B model file
+#local_llm = CTransformers(model='TheBloke/zephyr-7B-beta-GGUF', model_file='zephyr-7b-beta.Q2_K.gguf', config=config)
+
 template = """Question: {question}
 
 Answer: Please refer to factual information and don't make up fictional data/information.
 """
 
-# %%
 @cl.on_chat_start
 def main():
     prompt = PromptTemplate(template=template, input_variables=['question'])
     llm_chain = LLMChain(prompt=prompt, llm=local_llm, verbose=True)
     cl.user_session.set("llm_chain", llm_chain)
 
-# %%
 @cl.on_message
 async def main(message: str):
     llm_chain = cl.user_session.get("llm_chain")

@@ -39,21 +39,25 @@ def main():
 
 @cl.on_message
 async def main(message: cl.Message):
-    # Your custom logic goes here...
+    # sets up an instance of Runnable with a custom ChatPromptTemplate for each chat session. 
+    # The Runnable is invoked everytime a user sends a message to generate the response.
     runnable = cl.user_session.get("runnable") # type: Runnable
     
+    # Prepare the message for streaming
     msg = cl.Message(content="")
     
+    # The callback handler is responsible 
+    # for listening to the chain’s intermediate steps and sending them to the UI
     async for chunk in runnable.astream(
         {"question": message.content},
         config=RunnableConfig(callbacks=[cl.LangchainCallbackHandler()]),
     ):
         await msg.stream_token(chunk)
     
-    # Send a response back to the user
+    # Send a response back to the user and close the message stream
     await msg.send()
 
 # %%
-#! chainlit run question-answer_Zepphyr_7B.py -w
+#! chainlit run question-answer_Zephyr_7B.py -w
 
 
